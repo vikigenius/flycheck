@@ -9478,6 +9478,13 @@ Update the error level of ERR according to
       (setf (flycheck-error-level err) level)))
   err)
 
+(defun flycheck-flake8--find-project-root (_checker)
+  "Compute an appropriate working-directory for flycheck-flake8.
+
+This is either a parent directory containing the flake8 config file, or nil."
+  (and buffer-file-name
+       (locate-dominating-file buffer-file-name flycheck-flake8rc)))
+
 (flycheck-define-checker python-flake8
   "A Python syntax and style checker using Flake8.
 
@@ -9497,6 +9504,7 @@ Requires Flake8 3.0 or newer. See URL
                     (concat "--stdin-display-name=" buffer-file-name)))
             "-")
   :standard-input t
+  :working-directory flycheck-flake8--find-project-root
   :error-filter (lambda (errors)
                   (let ((errors (flycheck-sanitize-errors errors)))
                     (seq-map #'flycheck-flake8-fix-error-level errors)))
