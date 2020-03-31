@@ -9841,7 +9841,10 @@ because it adds the current directory to Python's path)."
     `("-c" ,(concat "import sys;sys.path.pop(0);import runpy;"
                     (format "runpy.run_module(%S)" module-name)))))
 
-(flycheck-def-config-file-var flycheck-flake8rc python-flake8  ".flake8rc")
+(define-obsolete-variable-alias 'flycheck-flake8rc
+  'flycheck-flake8-config "32")
+
+(flycheck-def-config-file-var flycheck-flake8-config python-flake8  '(".flake8rc" "tox.ini" "setup.cfg"))
 
 (flycheck-def-option-var flycheck-flake8-error-level-alist
     '(("^E9.*$"  . error)               ; Syntax errors from pep8
@@ -9882,7 +9885,7 @@ integer, report any complexity greater than the value of this
 variable as warning.
 
 If set to an integer, this variable overrules any similar setting
-in the configuration file denoted by `flycheck-flake8rc'."
+in the configuration file denoted by `flycheck-flake8-config'."
   :type '(choice (const :tag "Do not check McCabe complexity" nil)
                  (integer :tag "Maximum complexity"))
   :safe #'integerp)
@@ -9892,11 +9895,11 @@ in the configuration file denoted by `flycheck-flake8rc'."
 
 If set to an integer, the value of this variable denotes the
 maximum length of lines, overruling any similar setting in the
-configuration file denoted by `flycheck-flake8rc'.  An error will
+configuration file denoted by `flycheck-flake8-config'.  An error will
 be reported for any line longer than the value of this variable.
 
 If set to nil, use the maximum line length from the configuration
-file denoted by `flycheck-flake8rc', or the PEP 8 recommendation
+file denoted by `flycheck-flake8-config', or the PEP 8 recommendation
 of 79 characters if there is no configuration with this setting."
   :type '(choice (const :tag "Default value")
                  (integer :tag "Maximum line length in characters"))
@@ -9922,7 +9925,7 @@ Requires Flake8 3.0 or newer. See URL
   :command ("python3"
             (eval (flycheck-python-module-args 'python-flake8 "flake8"))
             "--format=default"
-            (config-file "--config" flycheck-flake8rc)
+            (config-file "--config" flycheck-flake8-config)
             (option "--max-complexity" flycheck-flake8-maximum-complexity nil
                     flycheck-option-int)
             (option "--max-line-length" flycheck-flake8-maximum-line-length nil

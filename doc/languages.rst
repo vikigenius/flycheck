@@ -1019,7 +1019,7 @@ to view the docstring of the syntax checker.  Likewise, you may use
 
          The maximum length of lines.
 
-      .. syntax-checker-config-file:: flycheck-flake8rc
+      .. syntax-checker-config-file:: flycheck-flake8-config
 
    .. syntax-checker:: python-mypy
 
