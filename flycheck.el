@@ -9801,6 +9801,15 @@ See URL `http://puppet-lint.com/'."
   ;; the buffer is actually linked to a file, and if it is not modified.
   :predicate flycheck-buffer-saved-p)
 
+(defun flycheck-python--find-project-root (_checker)
+  "Compute an appropriate working-directory for flycheck-python specifically flake8.
+
+This is either a parent directory containing a setup.cfg, or nil."
+  ;; FIXME "setup.cfg" is not the only choice maybe tox.ini as well?
+  (and
+   buffer-file-name
+   (locate-dominating-file buffer-file-name "setup.cfg")))
+
 (defun flycheck-python-find-module (checker module)
   "Check if a Python MODULE is available.
 CHECKER's executable is assumed to be a Python REPL."
@@ -9934,6 +9943,7 @@ Requires Flake8 3.0 or newer. See URL
                     (concat "--stdin-display-name=" buffer-file-name)))
             "-")
   :standard-input t
+  :working-directory flycheck-python--find-project-root
   :error-filter (lambda (errors)
                   (let ((errors (flycheck-sanitize-errors errors)))
                     (seq-map #'flycheck-flake8-fix-error-level errors)))
